@@ -4,6 +4,15 @@ EMPTY = " "
 
 
 def display_board(pad):
+    """ Display the game board
+
+    Args:
+        pad: dict - the current game board state
+
+    Returns:
+        None
+    """
+
     print(f'|  {pad[1]}  |  {pad[2]}  |  {pad[3]}  |')
     print('|-----+-----+-----|')
     print(f'|  {pad[4]}  |  {pad[5]}  |  {pad[6]}  |')
@@ -11,21 +20,14 @@ def display_board(pad):
     print(f'|  {pad[7]}  |  {pad[8]}  |  {pad[9]}  |\n')
 
 
-def put_x(pad, pad_pos):
-    pad[pad_pos] = 'X'
-    return pad
-
-
-def put_0(pad, pad_pos):
-    pad[pad_pos] = '0'
-    return pad
-
-
-# ask which player between X and O goes first
 def ask_starting_player():
-    print('First player decides which symbol to use.')
+    """ Ask which player between X and O goes first
+
+    Returns:
+        None
+    """
     while True:
-        player = input('Which symbol do you want? (X/O): ')
+        player = input('First player, which symbol do you want? (X/O): ')
         if player == 'X' or player == 'x':
             print('Starting player is X\n')
             turn = 1
@@ -38,8 +40,16 @@ def ask_starting_player():
             print('ERROE: player non valido\n')
 
 
-# asks where to put the symbol and check if that position is avaiable
 def ask_position(pad):
+    """ Ask where to put the symbol and check if that position is avaiable
+
+    Args:
+        pad: dict - current game board state
+
+    Returns:
+        pos: the position if it is valid
+    """
+
     while True:
         pos = input('Where do you want to put your symbol?: ')
 
@@ -64,15 +74,33 @@ def ask_position(pad):
 
 
 def switch_player(turn, turn_counter):
-    if turn == 0:
-        turn = 1
-    elif turn == 1:
-        turn = 0
+    """ Switch the active plyer and increase the turn number
+
+    Args:
+        turn: int - active player's turn inidcator
+        turn_counter: int - number of turns that have been played
+
+    Returns:
+        int: the next player turn indicator
+        int: the current turn number
+    """
+
+    turn = (turn + 1) % 2
     turn_counter += 1
+
     return turn, turn_counter
 
 
 def check_victory(pad):
+    """ Check if the board state is a victory
+
+    Args:
+        pad: dict - current game board state
+
+    Returns:
+        bool: whether is a victory or not
+    """
+
     # victory cases: 123, 456, 789, 147, 258, 369, 159, 753
     is_victory = False
 
@@ -98,6 +126,12 @@ def check_victory(pad):
 
 
 def game():
+    """ Game Loop
+
+    Returns:
+        None
+    """
+
     turn_counter = 0
 
     # empty the pad at the start of the game
@@ -111,9 +145,9 @@ def game():
     while True:
         pos = ask_position(pad)
         if turn == 0:
-            pad = put_0(pad, pos)
+            pad[pos] = 'O'
         elif turn == 1:
-            pad = put_x(pad, pos)
+            pad[pos] = 'X'
 
         display_board(pad)
 
