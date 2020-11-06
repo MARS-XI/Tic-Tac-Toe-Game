@@ -4,6 +4,7 @@ from os import system
 
 EMPTY = " "
 
+PLAYER_SYMBOL = {0: "O", 1: "X"}
 
 def display_board(pad):
     """ Display the game board
@@ -44,7 +45,7 @@ def ask_starting_player():
             print('ERROR: invalid player\n')
 
 
-def ask_position(pad):
+def ask_position(pad, turn):
     """ Ask where to put the symbol and check if that position is avaiable
 
     Args:
@@ -55,7 +56,7 @@ def ask_position(pad):
     """
 
     while True:
-        pos = input('Where do you want to put your symbol?: ')
+        pos = input(f'{PLAYER_SYMBOL[turn]} turn, Where do you want to put your symbol?: ')
 
         try:
             pos = int(pos)  # check if input is an integer
@@ -144,15 +145,13 @@ def game():
 
     # game loop
     while True:
-        pos = ask_position(pad)
+        pos = ask_position(pad, turn)
         if turn == 0:
-            pad[pos] = 'O'
+            pad[pos] = PLAYER_SYMBOL[turn]
         elif turn == 1:
-            pad[pos] = 'X'
+            pad[pos] = PLAYER_SYMBOL[turn]
 
         display_board(pad)
-
-        turn, turn_counter = switch_player(turn, turn_counter)  # update turn info
 
         # check victory
         is_victory = check_victory(pad)
@@ -160,8 +159,10 @@ def game():
             print("---It's a tie!---".upper())
             break
         elif is_victory:
-            print("---You won!---".upper())
+            print(f"---{PLAYER_SYMBOL[turn]} won!---".upper())
             break
+
+        turn, turn_counter = switch_player(turn, turn_counter)  # update turn info 
 
 
 if __name__ == "__main__":
