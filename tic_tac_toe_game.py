@@ -1,5 +1,7 @@
 """ A game of Tic Tac Toe """
 
+from os import system
+
 EMPTY = " "
 
 
@@ -12,6 +14,8 @@ def display_board(pad):
     Returns:
         None
     """
+
+    system("clear")  # clear screen before new output
 
     print(f'|  {pad[1]}  |  {pad[2]}  |  {pad[3]}  |')
     print('|-----+-----+-----|')
@@ -37,7 +41,7 @@ def ask_starting_player():
             turn = 0
             return turn
         else:
-            print('ERROE: player non valido\n')
+            print('ERROR: invalid player\n')
 
 
 def ask_position(pad):
@@ -62,15 +66,12 @@ def ask_position(pad):
                 if pad[pos] == EMPTY:
                     return pos
                 else:
-                    print('ERROE: posizione già occupata')
-                    print('inserisci il tuo simbolo in un altra posizione vuota\n')
+                    print('ERROR: position already occupied. Choose an empty position.')
             else:
-                print('ERROE: posizione non valida')
-                print('inserisci una posizione compresa tra 1-9\n')
+                print('ERROR: invalid position. Choose a position between 1-9')
 
         except ValueError:
-            print('ERROE: input non valido')
-            print('inserisci una numero intero\n')
+            print('ERROR: invalid input. Insert a positive integer')
 
 
 def switch_player(turn, turn_counter):
