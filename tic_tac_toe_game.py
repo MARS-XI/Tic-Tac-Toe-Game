@@ -1,10 +1,18 @@
 """ A game of Tic Tac Toe """
 
 from os import system
+from sys import platform
 
 EMPTY = " "
 
-PLAYER_SYMBOL = {0: "O", 1: "X"}
+PLAYER = {0: "O", 1: "X"}
+
+def clear_screen():
+    if platform == "linux":
+        system("clear")
+    else:
+        system("cls")
+
 
 def display_board(pad):
     """ Display the game board
@@ -16,7 +24,7 @@ def display_board(pad):
         None
     """
 
-    system("clear")  # clear screen before new output
+    clear_screen()  # clear screen before new output
 
     print(f'|  {pad[1]}  |  {pad[2]}  |  {pad[3]}  |')
     print('|-----+-----+-----|')
@@ -29,23 +37,21 @@ def ask_starting_player():
     """ Ask which player between X and O goes first
 
     Returns:
-        None
+        int - player id
     """
     while True:
         player = input('First player, which symbol do you want? (X/O): ')
         if player == 'X' or player == 'x':
-            print('Starting player is X\n')
-            turn = 1
-            return turn
+            return 1
+        
         elif player == 'O' or player == 'o':
-            print('Starting player is O\n')
-            turn = 0
-            return turn
+            return 0
+        
         else:
             print('ERROR: invalid player\n')
 
 
-def ask_position(pad, turn):
+def ask_position(pad, player_id):
     """ Ask where to put the symbol and check if that position is avaiable
 
     Args:
@@ -56,7 +62,7 @@ def ask_position(pad, turn):
     """
 
     while True:
-        pos = input(f'{PLAYER_SYMBOL[turn]} turn, Where do you want to put your symbol?: ')
+        pos = input(f'{PLAYER[player_id]} turn, Where do you want to put your symbol?: ')
 
         try:
             pos = int(pos)  # check if input is an integer
@@ -73,24 +79,6 @@ def ask_position(pad, turn):
 
         except ValueError:
             print('ERROR: invalid input. Insert a positive integer')
-
-
-def switch_player(turn, turn_counter):
-    """ Switch the active plyer and increase the turn number
-
-    Args:
-        turn: int - active player's turn inidcator
-        turn_counter: int - number of turns that have been played
-
-    Returns:
-        int: the next player turn indicator
-        int: the current turn number
-    """
-
-    turn = (turn + 1) % 2
-    turn_counter += 1
-
-    return turn, turn_counter
 
 
 def check_victory(pad):
@@ -124,6 +112,7 @@ def check_victory(pad):
         is_victory = True
     elif pad[1] == pad[2] == pad[3] != EMPTY:
         is_victory = True
+
     return is_victory
 
 
@@ -140,16 +129,13 @@ def game():
     pad = {1: EMPTY, 2: EMPTY, 3: EMPTY, 4: EMPTY, 5: EMPTY, 6: EMPTY, 7: EMPTY, 8: EMPTY, 9: EMPTY}
 
     # turns: 0 = O, 1 = X
-    turn = ask_starting_player()
+    player_id = ask_starting_player()
     display_board(pad)
 
     # game loop
     while True:
-        pos = ask_position(pad, turn)
-        if turn == 0:
-            pad[pos] = PLAYER_SYMBOL[turn]
-        elif turn == 1:
-            pad[pos] = PLAYER_SYMBOL[turn]
+        pos = ask_position(pad, player_id)
+        pad[pos] = PLAYER[player_id]
 
         display_board(pad)
 
@@ -159,10 +145,12 @@ def game():
             print("---It's a tie!---".upper())
             break
         elif is_victory:
-            print(f"---{PLAYER_SYMBOL[turn]} won!---".upper())
+            print(f"---{PLAYER[player_id]} won!---".upper())
             break
 
-        turn, turn_counter = switch_player(turn, turn_counter)  # update turn info 
+        # Switch the active plyer and increase the turn number
+        player_id = (player_id + 1) % 2
+        turn_counter += 1
 
 
 if __name__ == "__main__":
